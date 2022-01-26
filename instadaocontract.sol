@@ -8,24 +8,29 @@ import  "hardhat/console.sol";
 contract InstaDao is ERC20, Ownable {
     uint256 _totalSupply;
     uint256 _decimals;
-    constructor(uint256 supply,uint256 amt,uint256 _deci) ERC20("MyToken","MTK")  {
+    address public own;
+    modifier onlyOwn{
+    require(msg.sender == own);
+    _;
+}
+    constructor(uint256 supply,uint256 amt,uint256 _deci,address sender) ERC20("MyToken","MTK")  {
         // console.log(totalSupply())
         _decimals=_deci;
          _totalSupply=supply * 10 ** _decimals;
-         
+         own=sender;
       _mint(msg.sender, amt);
      
         // console.log(cap());
     }
 
-    function _mint(address to, uint256 amount) internal override onlyOwner {
+    function _mint(address to, uint256 amount) internal override onlyOwn {
         // console.log(totalSupply())
         require(totalSupply() + amount * 10 ** _decimals <= _totalSupply,"Exceeding supply");
         super._mint(to, amount * 10 ** _decimals );
         // _totalSupply+=amount;
     }
     
-    function mint(address to, uint256 amount) public onlyOwner {
+    function mint(address to, uint256 amount) public onlyOwn {
         _mint(to, amount);
     }
 
@@ -39,7 +44,7 @@ contract DaoFactory{
     mapping(address => InstaDao) public children;
     event tokencreated(address tokenaddress,address creator);
     function create(uint256 supply,uint256 amt,uint256 deci) public {
-        InstaDao instaDao = new InstaDao(supply,amt,deci);
+        InstaDao instaDao = new InstaDao(supply,amt,deci,msg.sender);
         children[msg.sender] = instaDao;
         emit tokencreated(address(instaDao),msg.sender);
     }
