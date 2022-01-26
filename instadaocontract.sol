@@ -9,28 +9,28 @@ contract InstaDao is ERC20, Ownable {
     uint256 _totalSupply;
     uint256 _decimals;
     address public own;
-    modifier onlyOwn{
-    require(msg.sender == own);
-    _;
-}
-    constructor(uint256 supply,uint256 amt,uint256 _deci,address sender) ERC20("MyToken","MTK")  {
+    modifier onlyOwn(address sender) {
+        require(own == sender);
+        _;
+    }
+    constructor(uint256 supply,uint256 amt,uint256 _deci, address _owner) ERC20("MyToken","MTK")  {
         // console.log(totalSupply())
         _decimals=_deci;
          _totalSupply=supply * 10 ** _decimals;
-         own=sender;
+         own= _owner;
       _mint(msg.sender, amt);
      
         // console.log(cap());
     }
 
-    function _mint(address to, uint256 amount) internal override onlyOwn {
+    function _mint(address to, uint256 amount) internal override onlyOwn(msg.sender) {
         // console.log(totalSupply())
         require(totalSupply() + amount * 10 ** _decimals <= _totalSupply,"Exceeding supply");
         super._mint(to, amount * 10 ** _decimals );
         // _totalSupply+=amount;
     }
     
-    function mint(address to, uint256 amount) public onlyOwn {
+    function mint(address to, uint256 amount) public onlyOwn(msg.sender) {
         _mint(to, amount);
     }
 
