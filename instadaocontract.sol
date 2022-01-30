@@ -32,20 +32,19 @@ contract InstaDao is ERC20, Ownable {
         _mint(to, amount);
     }
 
-    function getTotalSupply() public view returns(uint256){
-        return _totalSupply;
-    }
+    
 }
 
 contract DaoFactory{
     
     // mapping(address => InstaDao) public children;
-    event tokencreated(address tokenaddress,address creator,string  name, string  symbol,uint256 deci,string metadata);
-    function create(uint256 supply,uint256 amt,uint256 deci,string memory name, string memory symbol,string memory metadata) public {
+    event tokencreated(address tokenaddress,address creator,string  name, string  symbol,uint256 deci,string metadata,uint256 totalSupply,string ens);
+    function create(uint256 supply,uint256 amt,uint256 deci,string memory name, string memory symbol,string memory metadata,string memory ens) public returns(address) {
         InstaDao instaDao = new InstaDao(supply,amt,deci,name,symbol);
         // children[msg.sender] = instaDao;
         instaDao.transferOwnership(msg.sender);
-        emit tokencreated(address(instaDao),msg.sender,name,symbol,deci,metadata);
+        emit tokencreated(address(instaDao),msg.sender,name,symbol,deci,metadata,supply,ens);
+        return address(instaDao);
     }
     // function emitTokenCreated(address tokenAddress,address sender) public {
     //     emit tokencreated(tokenAddress,sender);
