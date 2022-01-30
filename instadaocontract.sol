@@ -22,7 +22,7 @@ contract InstaDao is ERC20, Ownable {
     function _mint(address to, uint256 amount) internal override onlyOwner {
         // console.log(totalSupply())
         require(totalSupply() + amount * 10 ** _decimals <= _totalSupply,"Exceeding supply");
-        super._mint(to, amount);
+        super._mint(to, amount* 10 ** _decimals);
         // emit Mint(to,address(this),_totalSupply,amount);
         // DaoFactory.emitTokenCreated(address())
         // _totalSupply+=amount;
@@ -32,7 +32,7 @@ contract InstaDao is ERC20, Ownable {
         _mint(to, amount);
     }
     function _transfer(address sender, address recipient, uint256 amount) internal override {
-        super._transfer(sender,recipient,amount* 10 ** _decimals);
+        super._transfer(sender,recipient,amount);
         emit ManualTransfer(sender,recipient,address(this),amount);
     }
     
