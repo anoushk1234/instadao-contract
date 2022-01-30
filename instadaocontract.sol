@@ -22,7 +22,7 @@ contract InstaDao is ERC20, Ownable {
     function _mint(address to, uint256 amount) internal override onlyOwner {
         // console.log(totalSupply())
         require(totalSupply() + amount * 10 ** _decimals <= _totalSupply,"Exceeding supply");
-        super._mint(to, amount * 10 ** _decimals );
+        super._mint(to, amount);
         // emit Mint(to,address(this),_totalSupply,amount);
         // DaoFactory.emitTokenCreated(address())
         // _totalSupply+=amount;
